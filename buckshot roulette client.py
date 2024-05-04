@@ -59,4 +59,7 @@ class gui():
         self.root.mainloop()
     def item_selected(self,item):
         pass
+class conenction():
+    def __init__(self) -> None:
+        self.server = socket.socket()
 gui()
