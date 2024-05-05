@@ -1,6 +1,7 @@
 import tkinter
 import socket
 from tkinter import font
+import threading
 
 #place the ip i give you into the string
 ip = "86.160.112.140"
@@ -60,13 +61,26 @@ class gui():
         player_1_defib = tkinter.Label(self.player_1_frame,text="⚡",bg="grey")
         player_1_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
 
-        self.root.update()
+        #this is threading the socket connection
+        self.root.mainloop()
     def item_selected(self,item):
         pass
 class connection(gui):
     def __init__(self,ip) -> None:
-        super().__init__()
+        threading.Thread(target=super().__init__).start()
         self.server = socket.socket()
         self.server.connect((ip,8067))
         self.server.recv(1024)
+
+        self.lives = 0
+
+        self.mainloop()
+    def mainloop(self):
+        while True:
+            receive_buffer = self.server.recv(4096).decode()
+            receive_buffer = receive_buffer.split(",")
+            match receive_buffer[0]:
+                case "lives":
+                    self.lives = int(receive_buffer[1])
+                    print("updating lives",self.lives)
 connection(ip)
