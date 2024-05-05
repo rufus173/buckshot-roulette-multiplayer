@@ -85,6 +85,11 @@ class main:
                         self.chamber.append("blank")
                     case 1:
                         self.chamber.append("live")
+        string_shell_order = "".join((x+" ") for x in self.chamber)
+        self.con1.sendall(b"notificaiton,the shells are as follows: "+string_shell_order.encode())
+        self.con1.recv(1024)
+        self.con2.sendall(b"notificaiton,the shells are as follows: "+string_shell_order.encode())
+        self.con2.recv(1024)
         random.shuffle(self.chamber)   
         print(self.chamber)       # the contents of the chamber stay with the server for safekeeping
 main()

@@ -2,6 +2,7 @@ import tkinter
 import socket
 from tkinter import font
 import threading
+from tkinter import messagebox
 
 #place the ip i give you into the string
 ip = "86.160.112.140"
@@ -78,6 +79,8 @@ class connection(gui):
         self.p1_item_list = []
         self.p2_item_list = []
         self.mainloop()
+    def notify(self,msg):
+        messagebox.showinfo(message=msg,title="info")
     def mainloop(self):
         while True:
             receive_buffer = self.server.recv(4096).decode()
@@ -105,4 +108,7 @@ class connection(gui):
                         self.player_2_items[counter]["text"] = i
                         counter += 1
                     self.server.sendall(b"_")
+                case "notificaiton":
+                    threading.Thread(target=lambda arg=receive_buffer[1]:self.notify(arg))
+                    self.server.sendall((b"_"))
 connection(ip)
