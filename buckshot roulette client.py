@@ -13,6 +13,7 @@ class gui():
         fg_1 = "grey"
 
         self.root = tkinter.Tk()
+        self.root.title("buckshot roulette")
         self.defaultFont = font.nametofont("TkDefaultFont") 
         self.defaultFont.configure(size=19,weight=font.BOLD) 
         self.player_1_frame = tkinter.LabelFrame(self.root,text="you",bg=bg_1) #for all intents and purposes you are always player 1
@@ -56,10 +57,10 @@ class gui():
         self.shotgun_frame.rowconfigure(1,weight=1)
 
         #creating the defibrilator charges
-        player_2_defib = tkinter.Label(self.player_2_frame,text="⚡",bg="grey")
-        player_2_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
-        player_1_defib = tkinter.Label(self.player_1_frame,text="⚡",bg="grey")
-        player_1_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
+        self.player_2_defib = tkinter.Label(self.player_2_frame,text="⚡",bg="grey")
+        self.player_2_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
+        self.player_1_defib = tkinter.Label(self.player_1_frame,text="⚡",bg="grey")
+        self.player_1_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
 
         #this is threading the socket connection
         self.root.mainloop()
@@ -72,15 +73,29 @@ class connection(gui):
         self.server.connect((ip,8067))
         self.server.recv(1024)
 
-        self.lives = 0
-
+        self.p1_lives = 0
+        self.p2_lives = 0
+        self.p1_item_list = []
+        self.p2_item_list = []
         self.mainloop()
     def mainloop(self):
         while True:
             receive_buffer = self.server.recv(4096).decode()
             receive_buffer = receive_buffer.split(",")
             match receive_buffer[0]:
-                case "lives":
-                    self.lives = int(receive_buffer[1])
-                    print("updating lives",self.lives)
+                case "lives": #p1[1] then p2[2]
+                    self.p1_lives = int(receive_buffer[1])
+                    print(receive_buffer)
+                    self.p2_lives = int(receive_buffer[2])
+                    print("updating lives",self.p1_lives,self.p2_lives)
+                    self.player_1_defib["text"] = "⚡"*self.p1_lives
+                    self.player_2_defib["text"] = "⚡"*self.p2_lives
+                case "p1 items":
+                    self.p1_item_list = receive_buffer[1].split("~") #trust me this is easier
+                    for i in self.p1_item_list:
+                        self.player_1_items[i]["text"] = self.p1_item_list[i]
+                case "p2 items":
+                    self.p2_item_list = receive_buffer[1].split("~")
+                    for i in self.p2_item_list:
+                        self.player_2_items[i]["text"] = self.p2_item_list[i]
 connection(ip)
