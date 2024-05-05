@@ -7,6 +7,7 @@ class main:
         server.bind(("192.168.1.239",8067))
         
         self.all_items = ["cigarettes","pills"]
+        self.chamber = []
 
         while True:
             time.sleep(1)
@@ -76,4 +77,14 @@ class main:
                 self.p1_items = self.p1_items[:9]
             if len(self.p2_items) > 8:
                 self.p2_items = self.p2_items[:9]
+        self.chamber = ["blank","live"]
+        for i in range(6):
+            if random.randint(0,1) == 1:
+                match random.randint(0,1):
+                    case 0:
+                        self.chamber.append("blank")
+                    case 1:
+                        self.chamber.append("live")
+        random.shuffle(self.chamber)   
+        print(self.chamber)       # the contents of the chamber stay with the server for safekeeping
 main()
