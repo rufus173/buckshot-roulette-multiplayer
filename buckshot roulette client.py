@@ -90,12 +90,19 @@ class connection(gui):
                     print("updating lives",self.p1_lives,self.p2_lives)
                     self.player_1_defib["text"] = "⚡"*self.p1_lives
                     self.player_2_defib["text"] = "⚡"*self.p2_lives
+                    self.server.sendall(b"_")
                 case "p1 items":
                     self.p1_item_list = receive_buffer[1].split("~") #trust me this is easier
+                    counter = 0
                     for i in self.p1_item_list:
-                        self.player_1_items[i]["text"] = self.p1_item_list[i]
+                        self.player_1_items[counter]["text"] = i
+                        counter += 1
+                    self.server.sendall(b"_")
                 case "p2 items":
                     self.p2_item_list = receive_buffer[1].split("~")
+                    counter = 0
                     for i in self.p2_item_list:
-                        self.player_2_items[i]["text"] = self.p2_item_list[i]
+                        self.player_2_items[counter]["text"] = i
+                        counter += 1
+                    self.server.sendall(b"_")
 connection(ip)

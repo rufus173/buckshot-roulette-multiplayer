@@ -49,7 +49,9 @@ class main:
             time.sleep(5)
     def update_players(self):#seperation with a comma
         self.con1.sendall(("lives,"+str(self.p1_lives)+","+str(self.p2_lives)).encode()) #i should be better but 1st is p1 lives then p2 lives
+        self.con1.recv(1024)
         self.con2.sendall(("lives,"+str(self.p1_lives)+","+str(self.p2_lives)).encode())
+        self.con2.recv(1024)
         p1itemstring = ""
         for i in self.p1_items:
             p1itemstring = p1itemstring + i + "~" #to make it easier to reconstruct on the client side
@@ -59,9 +61,13 @@ class main:
             p2itemstring = p2itemstring + i + "~"
         p2itemstring = p2itemstring.rstrip("~")
         self.con1.sendall(("p1 items"+","+p1itemstring).encode())
+        self.con1.recv(1024)
         self.con2.sendall(("p1 items"+","+p2itemstring).encode())
+        self.con2.recv(1024)
         self.con1.sendall(("p2 items"+","+p1itemstring).encode())
+        self.con1.recv(1024)
         self.con2.sendall(("p2 items"+","+p2itemstring).encode())
+        self.con2.recv(1024)
     def reload(self):
         for i in range(self.lives):
             self.p1_items.append(self.all_items[random.randint(0,len(self.all_items)-1)])
