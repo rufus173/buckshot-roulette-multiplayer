@@ -1,6 +1,10 @@
 import tkinter
 import socket
 from tkinter import font
+
+#place the ip i give you into the string
+ip = "86.160.112.140"
+
 class gui():
     def __init__(self) -> None:#just gonna initialise the entire gui
         bg_1 = "#7d4e2d"
@@ -56,10 +60,13 @@ class gui():
         player_1_defib = tkinter.Label(self.player_1_frame,text="⚡",bg="grey")
         player_1_defib.grid(row=0,column=0,columnspan=2,sticky=tkinter.NSEW)
 
-        self.root.mainloop()
+        self.root.update()
     def item_selected(self,item):
         pass
-class conenction():
-    def __init__(self) -> None:
+class connection(gui):
+    def __init__(self,ip) -> None:
+        super().__init__()
         self.server = socket.socket()
-gui()
+        self.server.connect((ip,8067))
+        self.server.recv(1024)
+connection(ip)
